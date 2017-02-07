@@ -17,7 +17,7 @@ import javax.swing.*;
  * command line arguments. Dude, it's 2017. Write code like it.
  */
 public class CrapsStartScreen {
-// TEST
+
 	final String NOFILESELECTED = "No file selected.";
 
 	CrapsGame cg;
