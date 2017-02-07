@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package crptest;
 
@@ -47,91 +47,68 @@ public class CrapsGame {
 	private final String DONTCOMENINEODDS = "odc9";
 	private final String DONTCOMETENODDS = "odc10";
 	private final String NOBET = "N";
-	
+
 	private final int NORMALBET = 10;
 	private final int SIXEIGHTODDBET = 12;
-	
+	public String filename;
 
 	private int bankroll;
 	private int wincondition;
 	private int losecondition;
-	private String filename;
 	private boolean allowrepeats;
 	private int retainerbankroll;
-	
+
 	private String stratToUse;
-	
+
 	private Table tab;
 	private Dice dice;
 	private CrapsStrategy crapsstrategy;
 	private OutputAnalysis outputanalysis;
-	
+
 	/**
 	 * Main method that simply constructs an object of this class.
 	 * Done to get out of the static method.
 	 * @param args System arguments
 	 */
 	public static void main(String[] args) {
-		CrapsGame cg = new CrapsGame(args);
+		new CrapsGame(args);
+		//new CrapsStartScreen(this);
 	}
-	
+
 	/**
 	 * Constructor for the game object.
 	 * Gathers in-line arguments to assign values to (in this order) bank roll, win condition, lose condition, and the strategy filename.
 	 * @param args System arguments, provided from the main()
 	 */
 	public CrapsGame(String[] args) {
-		try {
-		bankroll = Integer.parseInt(args[0]);
-		retainerbankroll = bankroll;
-		} catch (Exception e) {
-			System.err.println("Bankroll is not a readable integer.");
-			System.exit(-1);
-		}
-		
-		try {
-		wincondition = Integer.parseInt(args[1]);
-		} catch (Exception e) {
-			System.err.println("Win condition is not a readable integer.");
-			System.exit(-2);
-		}
-		
-		try {
-		losecondition = Integer.parseInt(args[2]);
-		} catch (Exception e) {
-			System.err.println("Lose condition is not a readable integer.");
-			System.exit(-3);
-		}
-		
-		filename = args[3];
-		
-		try {
-		allowrepeats = Boolean.parseBoolean(args[4]);
-		} catch (Exception e1) {
-			try {
-				int i = Integer.parseInt(args[4]);
-				if (i == 0)
-					allowrepeats = false;
-				else
-					allowrepeats = true;				
-			} catch (Exception e2) {
-				System.err.println("Allow repeats is not a readable boolean.");
-				System.exit(-4);
-			}
-		}
-		
+		new CrapsStartScreen(this);
+	}
+
+	/**
+	 * Starts the simulation based on the user's input.
+	 */
+	public void startSimulation(int wincondition_input,
+								int losecondition_input,
+								int bankroll_input,
+								boolean allowrepeats_input,
+								String filename_input) {
+		wincondition = wincondition_input;
+		losecondition = losecondition_input;
+		retainerbankroll = bankroll_input;
+		allowrepeats = allowrepeats_input;
+
 		tab = new Table();
 		dice = new Dice();
-		crapsstrategy = new CrapsStrategy(filename);
+		crapsstrategy = new CrapsStrategy(filename_input);
 		outputanalysis = new OutputAnalysis( "FirstRunthrough.xls");
 		outputanalysis.writeNextLine(1, 0, "Lowest $");
 		outputanalysis.writeNextLine(2, 0, "Highest $");
-		
+
 		for(int i = 1; i <= 10000; i++)
 		{
 			if( i % 100 == 0 )
 			{
-				int percent = i / 100; // Testing commit
+				int percent = i / 100; // Testing another commit
 				System.out.println(percent + "% complete");
 			}
 			gameplay(i);
@@ -150,15 +127,15 @@ public class CrapsGame {
 		int wagermultiplier = 1;
 		int turns = 0;
 		int roll = 0;
-		
+
 		int lowest = Integer.MAX_VALUE;
 		int highest = Integer.MIN_VALUE;
-		
+
 		List<String> splitupbets = new ArrayList<String>();
 		Iterator<String> itr;
-		
+
 		bankroll = retainerbankroll;
-		
+
 		//System.out.println("Welcome to the simulation! You are starting with $" + bankroll + ". Good luck!");
 		// loop based on user-provided conditions
 		// check for current bets
@@ -170,31 +147,31 @@ public class CrapsGame {
 		while (bankroll > losecondition && bankroll < wincondition)
 		{
 			//System.out.println("Turn #" + ++turns + ", Bankroll of $" + bankroll);
-			
+
 			if (lowest > bankroll)
 				lowest = bankroll;
-			
+
 			if (highest < bankroll)
 				highest = bankroll;
-			
+
 			if (tab.anyActiveBets()) {
 				stratToUse = crapsstrategy.getStrategy(tab.standingBets(), allowrepeats);
 			} else {
 				stratToUse = crapsstrategy.getStrategy("None", allowrepeats);
 			}
-			
+
 			splitupbets = Arrays.asList(stratToUse.split("[,]"));
 			// Thumb through the stratToUse
 			// Expected format: 2P,F,A7,4o5,o10
 			// Expected format: D,2F,6o10
 			// Break up on comments, error check odds bets, multiply wagers, use $12 bet when needed
 			itr = splitupbets.iterator();
-			
+
 			while (itr.hasNext()) {
 				nextbet = itr.next();
 				nextwager = NORMALBET;
 				wagermultiplier = 1;
-				
+
 				if (Character.isDigit(nextbet.charAt(0)))
 				{
 					wagermultiplier = Integer.parseInt(nextbet.substring(0, 1));
@@ -224,12 +201,12 @@ public class CrapsGame {
 						break;
 				}
 			}
-			
+
 			//System.out.println("   Currently on the table: " + tab.standingBets());
-			
+
 			roll = dice.rollDice();
 			//System.out.println("   The roll shows a " + roll);
-			payoutShot(roll);			
+			payoutShot(roll);
 		}
 		if (bankroll <= losecondition) {
 			// Loser
@@ -249,14 +226,14 @@ public class CrapsGame {
 			outputanalysis.writeNextLine(4, turnnumber, highest);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Determines how each shot pays out by the following:
 	 *  - Winning shots increase the bank roll, then are removed from the table
 	 *  - Losing bets are simply removed from the table
 	 *  - Established bets are added to the table
-	 *  
+	 *
 	 *  Payouts are the following:
 	 *   - Field pays 2:1 on 2, 12 and 1:1 on 3, 4, 9, 10, 11
 	 *   - Come Odds on 4, 10 pay 2:1
@@ -267,7 +244,7 @@ public class CrapsGame {
 	 * @param shot Number rolled by the dice. Between 2 and 12.
 	 */
 	public void payoutShot(int shot) {
-		switch (shot) 
+		switch (shot)
 		{
 			case 2:
 				// Pass Line loses
@@ -283,7 +260,7 @@ public class CrapsGame {
 				bankroll -= tab.getWager(ANYSEVEN);
 				tab.removeBet(ANYSEVEN);
 				break;
-				
+
 			case 3:
 				// Pass Line loses
 				bankroll -= tab.getWager(PASS);
@@ -298,7 +275,7 @@ public class CrapsGame {
 				bankroll -= tab.getWager(ANYSEVEN);
 				tab.removeBet(ANYSEVEN);
 				break;
-				
+
 			case 4:
 				// Come 4 wins 1:1
 				bankroll += tab.getWager(COMEFOUR);
@@ -318,7 +295,7 @@ public class CrapsGame {
 				// Any Seven loses
 				bankroll -= tab.getWager(ANYSEVEN);
 				tab.removeBet(ANYSEVEN);
-				
+
 				// Pass Line moves point to four
 				if (tab.getWager(PASS) > 0)
 					tab.addBet(COMEFOUR, tab.getWager(PASS));
@@ -328,7 +305,7 @@ public class CrapsGame {
 					tab.addBet(DONTCOMEFOUR, tab.getWager(DONTPASS));
 				tab.removeBet(DONTPASS);
 				break;
-				
+
 			case 5:
 				// Come 5 wins 1:1
 				bankroll += tab.getWager(COMEFIVE);
@@ -348,7 +325,7 @@ public class CrapsGame {
 				// Any Seven loses
 				bankroll -= tab.getWager(ANYSEVEN);
 				tab.removeBet(ANYSEVEN);
-				
+
 				// Pass Line moves point to five
 				if (tab.getWager(PASS) > 0)
 					tab.addBet(COMEFIVE, tab.getWager(PASS));
@@ -358,7 +335,7 @@ public class CrapsGame {
 					tab.addBet(DONTCOMEFIVE, tab.getWager(DONTPASS));
 				tab.removeBet(DONTPASS);
 				break;
-				
+
 			case 6:
 				// Come 6 wins 1:1
 				bankroll += tab.getWager(COMESIX);
@@ -378,7 +355,7 @@ public class CrapsGame {
 				// Any Seven loses
 				bankroll -= tab.getWager(ANYSEVEN);
 				tab.removeBet(ANYSEVEN);
-				
+
 				// Pass Line moves point to six
 				if (tab.getWager(PASS) > 0)
 					tab.addBet(COMESIX, tab.getWager(PASS));
@@ -388,8 +365,8 @@ public class CrapsGame {
 					tab.addBet(DONTCOMESIX, tab.getWager(DONTPASS));
 				tab.removeBet(DONTPASS);
 				break;
-				
-			case 7:				
+
+			case 7:
 				// Pass Line wins 1:1
 				bankroll += tab.getWager(PASS);
 				tab.removeBet(PASS);
@@ -452,7 +429,7 @@ public class CrapsGame {
 				// Don't Come 10 wins 1:2
 				bankroll += (tab.getWager(DONTCOMETENODDS) / 2);
 				tab.removeBet(DONTCOMETENODDS);
-				
+
 				// Field loses
 				bankroll -= tab.getWager(FIELD);
 				tab.removeBet(FIELD);
@@ -460,7 +437,7 @@ public class CrapsGame {
 				bankroll += (4 * tab.getWager(ANYSEVEN));
 				tab.removeBet(ANYSEVEN);
 				break;
-				
+
 			case 8:
 				// Come 8 wins 1:1
 				bankroll += tab.getWager(COMEEIGHT);
@@ -486,7 +463,7 @@ public class CrapsGame {
 				// Any Seven loses
 				bankroll -= tab.getWager(ANYSEVEN);
 				tab.removeBet(ANYSEVEN);
-				
+
 				// Pass Line moves point to eight
 				if (tab.getWager(PASS) > 0)
 					tab.addBet(COMEEIGHT, tab.getWager(PASS));
@@ -496,7 +473,7 @@ public class CrapsGame {
 					tab.addBet(DONTCOMEEIGHT, tab.getWager(DONTPASS));
 				tab.removeBet(DONTPASS);
 				break;
-				
+
 			case 9:
 				// Come 9 wins 1:1
 				bankroll += tab.getWager(COMENINE);
@@ -521,7 +498,7 @@ public class CrapsGame {
 				// Any Seven loses
 				bankroll -= tab.getWager(FIELD);
 				tab.removeBet(ANYSEVEN);
-				
+
 				// Pass Line moves point to nine
 				if (tab.getWager(PASS) > 0)
 					tab.addBet(COMENINE, tab.getWager(PASS));
@@ -531,7 +508,7 @@ public class CrapsGame {
 					tab.addBet(DONTCOMENINE, tab.getWager(DONTPASS));
 				tab.removeBet(DONTPASS);
 				break;
-				
+
 			case 10:
 				// Come 4 wins 1:1
 				bankroll += tab.getWager(COMETEN);
@@ -550,7 +527,7 @@ public class CrapsGame {
 				// Any Seven loses
 				bankroll -= tab.getWager(ANYSEVEN);
 				tab.removeBet(ANYSEVEN);
-				
+
 				// Pass Line moves point to ten
 				if (tab.getWager(PASS) > 0)
 					tab.addBet(COMETEN, tab.getWager(PASS));
@@ -560,7 +537,7 @@ public class CrapsGame {
 					tab.addBet(DONTCOMETEN, tab.getWager(DONTPASS));
 				tab.removeBet(DONTPASS);
 				break;
-				
+
 			case 11:
 				// Pass Line wins 1:1
 				bankroll += tab.getWager(PASS);
@@ -575,7 +552,7 @@ public class CrapsGame {
 				bankroll -= tab.getWager(ANYSEVEN);
 				tab.removeBet(ANYSEVEN);
 				break;
-				
+
 			case 12:
 				// Pass Line loses
 				bankroll -= tab.getWager(PASS);
@@ -587,14 +564,14 @@ public class CrapsGame {
 				bankroll -= tab.getWager(ANYSEVEN);
 				tab.removeBet(ANYSEVEN);
 				break;
-				
+
 			default:
 				System.err.println("payoutShot() provided with an invalid number. Number provided: " + shot);
 				System.exit(-101);
 				break;
 		}
 	}
-	
+
 	/**
 	 * Inner class that represents the craps table.
 	 * Logically, this object "holds" all the bets.
@@ -602,12 +579,12 @@ public class CrapsGame {
 	 *
 	 */
 	class Table {
-		private Map<String, Integer> tab;	
-		
+		private Map<String, Integer> tab;
+
 		public Table() {
 			tab = new HashMap<String, Integer>();
 		}
-		
+
 		/**
 		 * Method for determining if there are currently any bets on the table.
 		 * @return True if there are bets (the map has at least one key), false otherwise
@@ -615,7 +592,7 @@ public class CrapsGame {
 		public boolean anyActiveBets() {
 			return !tab.isEmpty();
 		}
-		
+
 		/**
 		 * Method that places a bet on the table.
 		 * @param bet Bet that is being placed
@@ -636,7 +613,7 @@ public class CrapsGame {
 			}
 			return true;
 		}
-		
+
 		/**
 		 * Internal method that has special functionality in the case that an odds bet is placed.
 		 * Checks if there is a come bet or don't come bet, then places odds on the correct one(s).
@@ -659,7 +636,7 @@ public class CrapsGame {
 			}
 			return true;
 		}
-		
+
 		/**
 		 * Method that gets the riding wager on a bet.
 		 * @param bet Bet to identify wager for
@@ -668,9 +645,9 @@ public class CrapsGame {
 		public Integer getWager(String bet) {
 			if (tab.containsKey(bet))
 				return tab.get(bet);
-			return 0;			
+			return 0;
 		}
-		
+
 		/**
 		 * Method that removes a standing bet.
 		 * @param bet Bet to be removed
@@ -691,13 +668,13 @@ public class CrapsGame {
 			}
 			return true;
 		}
-		
+
 		/**
 		 * Method that gathers the current bets that are on the table.
-		 * 
+		 *
 		 * This method as version 1 could probably be written better than a bunch of if-else statements.
 		 * Look into rewriting this upon a version update.
-		 * 
+		 *
 		 * @return String containing bets on table
 		 */
 		public String standingBets() {
@@ -707,31 +684,31 @@ public class CrapsGame {
 			String currentbets = "";
 
 			// Comma intentionally added in every case; first character is removed before return
-			if (tab.containsKey(DONTCOMEFOUR)) 
+			if (tab.containsKey(DONTCOMEFOUR))
 				currentbets = currentbets + ",D4";
 			if (tab.containsKey(DONTCOMEFIVE)) 
 				currentbets = currentbets + ",D5";
-			if (tab.containsKey(DONTCOMESIX)) 
+			if (tab.containsKey(DONTCOMESIX))
 				currentbets = currentbets + ",D6";
-			if (tab.containsKey(DONTCOMEEIGHT)) 
+			if (tab.containsKey(DONTCOMEEIGHT))
 				currentbets = currentbets + ",D8";
-			if (tab.containsKey(DONTCOMENINE)) 
+			if (tab.containsKey(DONTCOMENINE))
 				currentbets = currentbets + ",D9";
-			if (tab.containsKey(DONTCOMETEN)) 
+			if (tab.containsKey(DONTCOMETEN))
 				currentbets = currentbets + ",D10";
-			if (tab.containsKey(COMEFOUR)) 
+			if (tab.containsKey(COMEFOUR))
 				currentbets = currentbets + ",C4";
-			if (tab.containsKey(COMEFIVE)) 
+			if (tab.containsKey(COMEFIVE))
 				currentbets = currentbets + ",C5";
-			if (tab.containsKey(COMESIX)) 
+			if (tab.containsKey(COMESIX))
 				currentbets = currentbets + ",C6";
-			if (tab.containsKey(COMEEIGHT)) 
+			if (tab.containsKey(COMEEIGHT))
 				currentbets = currentbets + ",C8";
-			if (tab.containsKey(COMENINE)) 
+			if (tab.containsKey(COMENINE))
 				currentbets = currentbets + ",C9";
 			if (tab.containsKey(COMETEN))
 				currentbets = currentbets + ",C10";
-			
+
 			if (currentbets.length() > 0)
 				return currentbets.substring(1);
 			return "None";
