@@ -43,31 +43,36 @@ public class CrapsStartScreen {
 	JTextField winconditiontextfield;
 	JTextField loseconditiontextfield;
 
+	JPanel oddspanel;
+	JButton oddswindow;
+	
 	/**
 	 *
 	 */
-	public CrapsStartScreen(CrapsGame crapsgame) {
-		cg = crapsgame;
+	public CrapsStartScreen(CrapsGame cg) {
+		this.cg = cg;
 		buildBankrollPanel();
 		buildWinConditionPanel();
 		buildLoseConditionPanel();
 		buildFileChoicePanel();
 		buildAllowRepeatsPanel();
+		buildOddsPanel();
 		buildStartSimulationPanel();
 		buildUserMessagePanel();
 
 		frame = new JFrame("Craps Solver");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new GridLayout(0, 1));
-
+		
 		frame.add(bankrollpanel);
 		frame.add(winconditionpanel);
 		frame.add(loseconditionpanel);
 		frame.add(allowrepeatspanel);
 		frame.add(filechoicepanel);
+		frame.add(oddspanel);
 		frame.add(startsimulationpanel);
 		frame.add(usermessagepanel);
-
+		
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setSize(400, 300);
@@ -140,6 +145,16 @@ public class CrapsStartScreen {
 	}
 
 	/**
+	 * Created the odds window GUI components.
+	 */
+	public void buildOddsPanel() {
+		oddswindow = new JButton("Odds");
+		oddswindow.addActionListener(new OddsButtonListener(cg));
+		oddspanel = new JPanel();
+		oddspanel.add(oddswindow);
+	}
+	
+	/**
 	 * Creates the start simulation GUI components.
 	 */
 	public void buildStartSimulationPanel() {
@@ -160,6 +175,24 @@ public class CrapsStartScreen {
 		usermessagepanel.add(usermessagelabel);
 	}
 
+	/**
+	 * 
+	 * @author MikeLowrie
+	 *
+	 */
+	private class OddsButtonListener implements ActionListener {
+		CrapsGame cg;
+		
+		public OddsButtonListener(CrapsGame cg) {
+			this.cg = cg;
+		}
+		
+		public void actionPerformed(ActionEvent e) {
+			new CrapsOdds(cg);
+		}
+
+	}
+	
 	/**
 	 * StartSimulatorListener class allows the user to start the program, and checks that the
 	 * correct data has been input before beginning, such as an actual file.
