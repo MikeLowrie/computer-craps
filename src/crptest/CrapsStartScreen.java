@@ -82,7 +82,7 @@ public class CrapsStartScreen {
 	/**
 	 * Creates the bank roll GUI components.
 	 */
-	public void buildBankrollPanel() {
+	private void buildBankrollPanel() {
 		bankrolllabel = new JLabel("Bankroll:");
 		bankrolltextfield = new JTextField("1000", 4);
 		bankrolltextfield.setHorizontalAlignment(JTextField.RIGHT);
@@ -95,7 +95,7 @@ public class CrapsStartScreen {
 	/**
 	 * Creates the win condition GUI components.
 	 */
-	public void buildWinConditionPanel() {
+	private void buildWinConditionPanel() {
 		winconditionlabel = new JLabel("Win condition:");
 		winconditiontextfield = new JTextField("1200", 4);
 		winconditiontextfield.setHorizontalAlignment(JTextField.RIGHT);
@@ -108,7 +108,7 @@ public class CrapsStartScreen {
 	/**
 	 * Creates the lose condition GUI components.
 	 */
-	public void buildLoseConditionPanel() {
+	private void buildLoseConditionPanel() {
 		loseconditionlabel = new JLabel("Lose condition:");
 		loseconditiontextfield = new JTextField("800", 4);
 		loseconditiontextfield.setHorizontalAlignment(JTextField.RIGHT);
@@ -121,7 +121,7 @@ public class CrapsStartScreen {
 	/**
 	 * Creates the file chooser GUI components.
 	 */
-	public void buildFileChoicePanel() {
+	private void buildFileChoicePanel() {
 		filechoicebtn = new JButton("Choose strategy...");
 		filechoicebtn.addActionListener(new FileButtonListener());
 
@@ -137,7 +137,7 @@ public class CrapsStartScreen {
 	/**
 	 * Creates the allow repeats GUI components.
 	 */
-	public void buildAllowRepeatsPanel() {
+	private void buildAllowRepeatsPanel() {
 		allowrepeatscheck = new JCheckBox("Allow repeats");
 
 		allowrepeatspanel = new JPanel();
@@ -147,7 +147,7 @@ public class CrapsStartScreen {
 	/**
 	 * Created the odds window GUI components.
 	 */
-	public void buildOddsPanel() {
+	private void buildOddsPanel() {
 		oddswindow = new JButton("Odds");
 		oddswindow.addActionListener(new OddsButtonListener(cg));
 		oddspanel = new JPanel();
@@ -157,7 +157,7 @@ public class CrapsStartScreen {
 	/**
 	 * Creates the start simulation GUI components.
 	 */
-	public void buildStartSimulationPanel() {
+	private void buildStartSimulationPanel() {
 		startsimulationbtn = new JButton("Start simulation");
 		startsimulationbtn.addActionListener(new StartSimulationListener());
 
@@ -168,7 +168,7 @@ public class CrapsStartScreen {
 	/**
 	 * Creates the user message GUI components.
 	 */
-	public void buildUserMessagePanel() {
+	private void buildUserMessagePanel() {
 		usermessagelabel = new JLabel("Select your starting conditions.");
 
 		usermessagepanel = new JPanel();
