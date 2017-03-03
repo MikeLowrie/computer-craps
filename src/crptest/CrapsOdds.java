@@ -21,6 +21,7 @@ public class CrapsOdds {
 	JPanel fieldtwoodds;
 	JPanel fieldthreeodds;
 	JPanel fieldtwelveodds;
+	JPanel okcancelpanel;
 	
 	JLabel fieldlabel;
 	JLabel fieldtwolabel;
@@ -38,6 +39,9 @@ public class CrapsOdds {
 	JRadioButton fieldtwelvedoublepayout;
 	JRadioButton fieldtwelvetriplepayout;
 	
+	JButton okbutton;
+	JButton cancelbutton;
+	
 	/**
 	 * Dialog for selecting the payout of various bets, which can vary when playing different tables in real casinos.
 	 * @param cg
@@ -53,6 +57,8 @@ public class CrapsOdds {
 		buildFieldTwoPanel();
 		buildFieldThreePanel();
 		buildFieldTwelvePanel();
+		
+		buildOKAndCancelButtons();
 		
 		this.setFrameLayout();
 		
@@ -171,6 +177,34 @@ public class CrapsOdds {
 	}
 	
 	/**
+	 * 
+	 */
+	private void buildOKAndCancelButtons() {
+		// Build components
+		okcancelpanel = new JPanel();
+		okbutton = new JButton("OK");
+		cancelbutton = new JButton("Cancel");
+		
+		// Set layout
+		GroupLayout layout = new GroupLayout(okcancelpanel);
+		okcancelpanel.setLayout(layout);
+		
+		//layout.setAutoCreateGaps(true);
+		//layout.setAutoCreateContainerGaps(true);
+		
+		layout.setHorizontalGroup(
+			layout.createSequentialGroup()
+				.addComponent(okbutton)
+				.addComponent(cancelbutton));
+		
+		layout.setVerticalGroup(
+			layout.createSequentialGroup()
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+					.addComponent(okbutton)
+					.addComponent(cancelbutton)));
+	}
+	
+	/**
 	 * Sets the layout of the entire frame, using GroupLayout.
 	 */
 	private void setFrameLayout() {
@@ -187,7 +221,8 @@ public class CrapsOdds {
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 					.addComponent(fieldlabel)
 					.addComponent(fieldthreeodds))
-				.addComponent(fieldtwelveodds));
+				.addComponent(fieldtwelveodds)
+				.addComponent(okcancelpanel));
 		
 		layout.setVerticalGroup(
 			layout.createSequentialGroup()
@@ -195,6 +230,7 @@ public class CrapsOdds {
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(fieldtwoodds)
 						.addComponent(fieldthreeodds)
-						.addComponent(fieldtwelveodds)));
+						.addComponent(fieldtwelveodds)
+						.addComponent(okcancelpanel)));
 	}
 }
