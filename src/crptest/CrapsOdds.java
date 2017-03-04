@@ -3,7 +3,12 @@
  */
 package crptest;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.*;
 
@@ -18,6 +23,7 @@ public class CrapsOdds {
 	CrapsGame cg;
 	JFrame frame;
 	
+	JPanel mainpanel;
 	JPanel fieldtwoodds;
 	JPanel fieldthreeodds;
 	JPanel fieldtwelveodds;
@@ -39,8 +45,8 @@ public class CrapsOdds {
 	JRadioButton fieldtwelvedoublepayout;
 	JRadioButton fieldtwelvetriplepayout;
 	
-	JButton okbutton;
-	JButton cancelbutton;
+	JButton okbtn;
+	JButton cancelbtn;
 	
 	/**
 	 * Dialog for selecting the payout of various bets, which can vary when playing different tables in real casinos.
@@ -60,7 +66,8 @@ public class CrapsOdds {
 		
 		buildOKAndCancelButtons();
 		
-		this.setFrameLayout();
+		setMainLayout();
+		setFrameLayout();
 		
 		frame.pack();
 		frame.setLocationRelativeTo(null);
@@ -177,40 +184,28 @@ public class CrapsOdds {
 	}
 	
 	/**
-	 * 
+	 * Creates the GUI components for the OK and Cancel buttons.
 	 */
 	private void buildOKAndCancelButtons() {
 		// Build components
 		okcancelpanel = new JPanel();
-		okbutton = new JButton("OK");
-		cancelbutton = new JButton("Cancel");
+		okbtn = new JButton("OK");
+		okbtn.addActionListener(new OddsActionListener());
+		cancelbtn = new JButton("Cancel");
+		cancelbtn.addActionListener(new OddsActionListener());
 		
-		// Set layout
-		GroupLayout layout = new GroupLayout(okcancelpanel);
-		okcancelpanel.setLayout(layout);
-		
-		//layout.setAutoCreateGaps(true);
-		//layout.setAutoCreateContainerGaps(true);
-		
-		layout.setHorizontalGroup(
-			layout.createSequentialGroup()
-				.addComponent(okbutton)
-				.addComponent(cancelbutton));
-		
-		layout.setVerticalGroup(
-			layout.createSequentialGroup()
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-					.addComponent(okbutton)
-					.addComponent(cancelbutton)));
+		okcancelpanel.add(okbtn);
+		okcancelpanel.add(cancelbtn);
+		okcancelpanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 	}
 	
 	/**
-	 * Sets the layout of the entire frame, using GroupLayout.
+	 * 
 	 */
-	private void setFrameLayout() {
-		//https://docs.oracle.com/javase/tutorial/uiswing/layout/group.html
-		GroupLayout layout = new GroupLayout(frame.getContentPane());
-		frame.getContentPane().setLayout(layout);
+	private void setMainLayout() {
+		mainpanel = new JPanel();
+		GroupLayout layout = new GroupLayout(mainpanel);
+		mainpanel.setLayout(layout);
 		
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
@@ -221,8 +216,7 @@ public class CrapsOdds {
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 					.addComponent(fieldlabel)
 					.addComponent(fieldthreeodds))
-				.addComponent(fieldtwelveodds)
-				.addComponent(okcancelpanel));
+				.addComponent(fieldtwelveodds));
 		
 		layout.setVerticalGroup(
 			layout.createSequentialGroup()
@@ -230,7 +224,35 @@ public class CrapsOdds {
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(fieldtwoodds)
 						.addComponent(fieldthreeodds)
-						.addComponent(fieldtwelveodds)
-						.addComponent(okcancelpanel)));
+						.addComponent(fieldtwelveodds)));
+	}
+	
+	/**
+	 * Sets the layout of the entire frame, using GroupLayout.
+	 */
+	private void setFrameLayout() {
+		frame.add(mainpanel, BorderLayout.CENTER);
+		frame.add(okcancelpanel, BorderLayout.SOUTH);
+	}
+	
+	/**
+	 * 
+	 * @author MikeLowrie
+	 *
+	 */
+	private class OddsActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent event) {
+			try {
+				if(event.getSource() == okbtn) {
+					// TODO: Add functionality to assign odds values to program
+					frame.dispose();
+				} else if(event.getSource() == cancelbtn) {
+					frame.dispose();
+				}
+			} catch (Exception e) {
+				System.err.println("Error on Odds dialog!");
+			}
+		}
+		
 	}
 }

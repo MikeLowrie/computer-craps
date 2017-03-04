@@ -290,10 +290,10 @@ public class CrapsStartScreen {
 						filenamelabel.setText("No file selected.");
 					}
 				}
-				} catch (Exception e) {
+			} catch (Exception e) {
 					System.err.println("Failure on loading File Button.");
 					System.exit(-101);
-				}
+			}
 		}
 	}
 }
