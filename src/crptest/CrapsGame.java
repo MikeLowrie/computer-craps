@@ -77,7 +77,7 @@ public class CrapsGame {
 
 	/**
 	 * Constructor for the game object.
-	 * Gathers in-line arguments to assign values to (in this order) bank roll, win condition, lose condition, and the strategy filename.
+	 * In-line arguments have been replaced with GUI arguments, which players provide before starting simulation.
 	 * @param args System arguments, provided from the main()
 	 */
 	public CrapsGame(String[] args) {
