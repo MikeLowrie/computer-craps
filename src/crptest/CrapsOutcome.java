@@ -1,4 +1,9 @@
+/**
+ * 
+ */
+package crptest;
 
+import java.util.ArrayList;
 
 public class CrapsOutcome {
 
