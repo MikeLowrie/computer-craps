@@ -1,19 +1,11 @@
-/**
-<<<<<<< HEAD
- *
-=======
- * 
->>>>>>> origin/feature/CrapsOutcome
- */
 package crptest;
 
 public class CrapsBet {
 
-<<<<<<< HEAD
   private int[][] betspectrum;
 
   private int investment; // How much is needed to make this bet?
-  private boolean isflexible;
+  private boolean isflexible; // Can this bet be removed at any time?
   private String name;
   private double differential;
 
@@ -23,6 +15,7 @@ public class CrapsBet {
     betspectrum[][] = new int[6][6];
     this.name = name;
     this.workbook = workbook;
+    // TODO: Set investment somehow, probably from Excel
     try {
       workbook.getSheet(name);
       betspectrum[0][0] = Integer.parseInt(sheet.getCell(1, 1).getContents());
@@ -70,6 +63,22 @@ public class CrapsBet {
       System.err.println("Error when retrieving sheet " + name + " from Excel document.");
 			System.exit(-13);
     }
+
+    this.setDifferential();
+  }
+
+  /**
+  * Rather than set the attribute via a provided attribute, this will calculate the value based on the bet spectrum.
+  * As such, this method is left private.
+  */
+  private void setDifferential() {
+    differential = 0;
+
+    for(int i = 0; i < 6; i++)
+      for(int j = 0; j < 6; j++)
+        differential += betspectrum[i][j];
+
+    this.differential = differential / 36;
   }
 
   public int[][] getSpectrum() {
@@ -82,41 +91,9 @@ public class CrapsBet {
 
   public double getDifferential() {
     return differential;
-=======
-  private double[][] betspectrum;
-  private int investment; // How much is needed to make this bet?
-  private boolean isflexible;
-  private boolean requiresminimum; // Does this bet need to at least meet the table minimum? Hardways, prop bets do NOT have to.
-  private String name;
+  }
 
-  public CrapsBet(double[][] betspectrum, int investment, boolean isflexible, boolean requiresminimum, String name) {
-	this.betspectrum = betspectrum;
-	this.investment = investment;
-    this.isflexible = isflexible;
-    this.requiresminimum = requiresminimum;
-    this.name = name;
-  }
-  
-  /**
-   * Retrieves the odds that will result from this bet hitting a specific combination of dice.
-   * @param firstdie Number on first die
-   * @param seconddie Number on second die
-   * @return The payout odds of this bet, based on the dice roll
-   */
-  public double getPayout(int firstdie, int seconddie) {
-	 return betspectrum[firstdie][seconddie]; 
-  }
-  
-  /**
-   * Simple getter method to return this bet's name.
-   * @return Name of this bet
-   */
-  public String getName() {
-	  return this.name;
-  }
-  
-  public boolean requiresMinimum() {
-	  return this.requiresminimum;
->>>>>>> origin/feature/CrapsOutcome
+  public boolean getIsFlexible() {
+    return isflexible;
   }
 }
