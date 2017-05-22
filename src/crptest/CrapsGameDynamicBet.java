@@ -22,15 +22,49 @@ public class CrapsGameDynamicBet {
 		createCombinations(everysinglebet, new ArrayList<CrapsBet>(), 0);
 	}
 
-	private void determineNextBet() {
+	private CrapsCombination determineNextBet() {
+
+		// Strip away 'flexible' bets to increase available bankroll
 		ArrayList<CrapsBet> nextbets = activebets;
 		for(CrapsBet bet : nextbets) {
 			if(!bet.getIsFlexible()) {
 				nextbets.remove(bet);
+				// @TODO: Increase bankroll by removing these bets
 			}
 		}
-		ArrayList<CrapsBet> availablebets;
-		for()
+
+		// Find all bets that you can afford
+		CrapsCombination marker = crapslist.getListHead();
+		CrapsList availablelist = new CrapsList();
+		while(marker.investment < this.bankroll) {
+			availablelist.insertLast(marker);
+			marker = marker.next;
+		}
+
+		// Locate bet with highest differential
+		CrapsCombination bestbet = availablelist.getListHead();
+		ArrayList<CrapsCombination> bestbets = new ArrayList<CrapsCombination>();
+		while(bestbet != null) {
+			if(bestbets.isEmpty()) {
+				bestbets.add(bestbet);
+			} else if(bestbet.differential > bestbets.get(0).differential) {
+				bestbets.clear();
+				bestbets.add(bestbet);
+			} else if(bestbet.differential = bestbets.get(0).differential) {
+				bestbets.add(bestbet);
+			}
+		}
+
+		// Pick bet with lowest bankroll contribution
+		// @TODO: Implement ways to allow user to choose desired contribution
+		CrapsCombination bettouse = bestbet.get(0);
+		for(CrapsCombination betcheck : bestbets) {
+			if(betcheck.investment < bettouse.investment) {
+				bettouse = betcheck;
+			}
+		}
+
+		return bettouse;
 	}
 
 	private void createCombinations(ArrayList<CrapsBet> input, ArrayList<CrapsBet> output, int index, int jndex) {
